@@ -1,0 +1,48 @@
+{
+    "name": "gyp-nan-async-ts",
+    "version": "0.0.1",
+    "private": true,
+    "license": "MIT",
+    "author": "masataka-kurihara",
+    "main": "lib/hello.js",
+    "types": "lib/hello.d.ts",
+    "scripts": {
+        "clean": "rimraf build && rimraf lib",
+        "install": "node-gyp rebuild",
+        "lib": "tsc -p tsconfig.json",
+        "build": "yarn run clean && yarn run install && yarn run lib",
+        "lint": "tslint --project ./ './src/**/*.ts'",
+        "test": "jest --config=./package.json"
+    },
+    "jest": {
+        "moduleFileExtensions": [
+            "ts",
+            "js",
+            "json"
+        ],
+        "moduleNameMapper": {
+            "^@/(.*)$": "<rootDir>/src/$1"
+        },
+        "testMatch": [
+            "**/__tests__/*\\.(spec|test)\\.ts"
+        ],
+        "transform": {
+            "^.+\\.tsx?$": "ts-jest"
+        }
+    },
+    "dependencies": {
+        "bindings": "^1.3.0",
+        "nan": "^2.10.0"
+    },
+    "devDependencies": {
+        "@types/jest": "^22.2.3",
+        "@types/node": "^10.0.6",
+        "@types/rimraf": "^2.0.2",
+        "jest": "^22.4.3",
+        "rimraf": "^2.6.2",
+        "ts-jest": "^22.4.6",
+        "tslint": "^5.10.0",
+        "tslint-config-airbnb": "^5.8.0",
+        "typescript": "^2.8.3"
+    }
+}
