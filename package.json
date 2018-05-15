@@ -7,12 +7,12 @@
     "main": "lib/hello.js",
     "types": "lib/hello.d.ts",
     "scripts": {
-        "clean": "rimraf build && rimraf lib",
         "install": "node-gyp rebuild",
+        "clean": "rimraf lib",
         "lib": "tsc -p tsconfig.json",
-        "build": "yarn run clean && yarn run install && yarn run lib",
+        "build": "yarn run install && yarn run clean && yarn run lib",
         "lint": "tslint --project ./ './src/**/*.ts'",
-        "test": "jest --config=./package.json"
+        "test": "jest"
     },
     "jest": {
         "moduleFileExtensions": [
@@ -37,7 +37,6 @@
     "devDependencies": {
         "@types/jest": "^22.2.3",
         "@types/node": "^10.0.6",
-        "@types/rimraf": "^2.0.2",
         "jest": "^22.4.3",
         "rimraf": "^2.6.2",
         "ts-jest": "^22.4.6",
