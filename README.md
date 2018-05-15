@@ -64,3 +64,17 @@ NAN_MODULE_INIT(Init) {
 
 NODE_MODULE(helloLib, Init)
 ```
+
+## TypeScript
+
+```typescript
+const lib = require('bindings')('helloLib');
+
+export interface Cb {
+    (msg: string): void;
+}
+
+export const greeting = (name: string, cb: Cb): void => {
+    return lib.nativeHello(name, cb);
+};
+```
