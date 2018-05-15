@@ -1,8 +1,14 @@
-import { greeting } from '../hello';
+import { greeting, greetingPromise } from '../hello';
 
-test('greeting', (done) => {
-    greeting('World!', (msg) => {
-        console.warn(msg);
-        done();
+describe('hello', () => {
+    test('greeting', (done) => {
+        greeting('World!', (msg) => {
+            console.warn(msg);
+            done();
+        });
+    });
+
+    test('greetingPromise', async () => {
+        console.warn(await greetingPromise('Promise World!'));
     });
 });
