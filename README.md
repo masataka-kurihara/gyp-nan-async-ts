@@ -27,11 +27,10 @@ class HelloWorker : public AsyncWorker {
         void Execute () {}
     protected:
         void HandleOKCallback () {
-            Nan::HandleScope scope;//
+            Nan::HandleScope scope;
             Local<String> hello = New<String>("Hello ").ToLocalChecked();
             Local<String> name = To<String>(GetFromPersistent("name")).ToLocalChecked();
             Local<Value> argv[] = { Null(), String::Concat(hello, name) };
-            // async_resource is AsyncWorker's protected member.
             callback->Call(2, argv, async_resource);
         }
 };
