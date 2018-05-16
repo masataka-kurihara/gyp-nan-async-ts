@@ -27,6 +27,7 @@ class HelloWorker : public AsyncWorker {
         void Execute () {}
     protected:
         void HandleOKCallback () {
+            Nan::HandleScope scope;
             Local<Value> argv[] = {
                 // Nan::New converts char* to v8::MaybeLocal.
                 // ToLocalChecked converts v8::MaybeLocal to v8::Local, then
@@ -44,6 +45,7 @@ NAN_METHOD(HelloMethod) {
     if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction())
         return ThrowTypeError("Illegal Arguments");
 
+    Nan::HandleScope scope;
     Utf8String arg0(info[0]);
 
     // copy the strings since the JS garbage collector might run before the async request is finished
@@ -56,9 +58,7 @@ NAN_METHOD(HelloMethod) {
 }
 
 NAN_MODULE_INIT(Init) {
-    // v8::Set and Nan::Set are conflicted.
-    Nan::Set(target, New<String>("nativeHello").ToLocalChecked(),
-        GetFunction(New<FunctionTemplate>(HelloMethod)).ToLocalChecked());
+    Export(target, "nativeHello", HelloMethod);
 }
 
 NODE_MODULE(helloLib, Init)
