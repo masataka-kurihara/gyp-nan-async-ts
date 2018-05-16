@@ -3,19 +3,13 @@ import { greeting, greetingPromise } from '../hello';
 describe('hello', () => {
     test('greeting', (done) => {
         greeting('World!', (err, msg) => {
-            if (err) {
-                fail(err);
-            }
-            console.warn(msg);
+            expect(err).toBeNull();
+            expect(msg).toBe('Hello World!');
             done();
         });
     });
 
     test('greetingPromise', async () => {
-        try {
-            console.warn(await greetingPromise('Promise World!'));
-        } catch (err) {
-            fail(err);
-        }
+        expect(await greetingPromise('Promise!')).toBe('Hello Promise!');
     });
 });
