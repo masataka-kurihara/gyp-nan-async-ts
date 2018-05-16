@@ -67,18 +67,21 @@ NODE_MODULE(helloLib, Init)
 ## TypeScript
 
 ```typescript
-import { greeting, greetingPromise } from '../hello';
+const binding = require('bindings')('helloLib');
 
-describe('hello', () => {
-    test('greeting', (done) => {
-        greeting('World!', (msg) => {
-            console.warn(msg);
-            done();
+export interface Cb {
+    (msg: string): void;
+}
+
+export const greeting = (name: string, cb: Cb): void => {
+    return binding.nativeHello(name, cb);
+};
+
+export const greetingPromise = (name: string): Promise<string> => {
+    return new Promise<string>((resolve) => {
+        binding.nativeHello(name, (msg: string) => {
+            resolve(msg);
         });
     });
-
-    test('greetingPromise', async () => {
-        console.warn(await greetingPromise('Promise World!'));
-    });
-});
+};
 ```
