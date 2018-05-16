@@ -5,23 +5,18 @@ using namespace v8;
 
 class HelloWorker : public AsyncWorker {
     public:
-        HelloWorker(char* arg, Callback* callback): AsyncWorker(callback), name(arg) {}
+        HelloWorker(Callback* callback): AsyncWorker(callback) {}
         ~HelloWorker() {}
         void Execute () {}
     protected:
         void HandleOKCallback () {
-            Nan::HandleScope scope;
-            Local<Value> argv[] = {
-                // Nan::New converts char* to v8::MaybeLocal.
-                // ToLocalChecked converts v8::MaybeLocal to v8::Local, then
-                // 'name' will be deleted when the JS garbage collector run.
-                String::Concat(New<String>("Hello ").ToLocalChecked(), New<String>(name).ToLocalChecked())
-            };
-            // async_resource comes from AsyncWorker's protected.
-            callback->Call(1, argv, async_resource);
+            Nan::HandleScope scope;//
+            Local<String> hello = New<String>("Hello ").ToLocalChecked();
+            Local<String> name = To<String>(GetFromPersistent("name")).ToLocalChecked();
+            Local<Value> argv[] = { Null(), String::Concat(hello, name) };
+            // async_resource is AsyncWorker's protected member.
+            callback->Call(2, argv, async_resource);
         }
-    private:
-        char* name;
 };
 
 NAN_METHOD(HelloMethod) {
@@ -29,15 +24,10 @@ NAN_METHOD(HelloMethod) {
         return ThrowTypeError("Illegal Arguments");
 
     Nan::HandleScope scope;
-    Utf8String arg0(info[0]);
-
-    // copy the strings since the JS garbage collector might run before the async request is finished
-    // Nan::Utf8String's the overridden '*' operator return a char* value.
-    char* str = new char[arg0.length() + 1];
-    strcpy(str, *arg0);
-
     Callback *callback = new Callback(To<Function>(info[1]).ToLocalChecked());
-    AsyncQueueWorker(new HelloWorker(str, callback));
+    HelloWorker *helloWorker = new HelloWorker(callback);
+    helloWorker->SaveToPersistent("name", info[0]);
+    AsyncQueueWorker(helloWorker);
 }
 
 NAN_MODULE_INIT(Init) {

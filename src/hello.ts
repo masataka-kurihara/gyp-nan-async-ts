@@ -1,7 +1,7 @@
 const binding = require('bindings')('helloLib');
 
 export interface Cb {
-    (msg: string): void;
+    (err: Error, msg: string): void;
 }
 
 export const greeting = (name: string, cb: Cb): void => {
@@ -9,9 +9,13 @@ export const greeting = (name: string, cb: Cb): void => {
 };
 
 export const greetingPromise = (name: string): Promise<string> => {
-    return new Promise<string>((resolve) => {
-        binding.nativeHello(name, (msg: string) => {
-            resolve(msg);
+    return new Promise<string>((resolve, reject) => {
+        binding.nativeHello(name, (err: Error, msg: string) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(msg);
+            }
         });
     });
 };
