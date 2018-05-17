@@ -45,7 +45,6 @@ class HelloWorker : public AsyncWorker {
 NAN_METHOD(HelloMethod) {
     if (info.Length() < 2 || !info[0]->IsString() || !info[1]->IsFunction())
         return ThrowTypeError("Illegal Arguments");
-    HandleScope scope;
     Callback *callback = new Callback(To<Function>(info[1]).ToLocalChecked());
     HelloWorker *helloWorker = new HelloWorker(callback);
     helloWorker->SaveToPersistent("name", info[0]);
